@@ -1,0 +1,14 @@
+{
+  "name": "crud_de_tarefas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "exemplo.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
