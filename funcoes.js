@@ -1,4 +1,4 @@
-import { db } from './banco.js';
+import { db, salvarBanco } from './database.js';
 
 export function createTask(titulo, descricao) {
     const novaTarefa = {
@@ -9,6 +9,7 @@ export function createTask(titulo, descricao) {
     };
     db.tarefas.push(novaTarefa);
     db.proxId++;
+    salvarBanco();
     return novaTarefa;
 }
 
@@ -24,16 +25,20 @@ export function updateTask(id, novosDados) {
     const index = db.tarefas.findIndex(tarefa => tarefa.id === id);
     if (index === -1) {
         console.log("Tarefa não encontrada");
-        return;
+        return false;
     }
     db.tarefas[index] = { ...db.tarefas[index], ...novosDados };
+    salvarBanco();
+    return true;
 }
 
 export function deleteTask(id) {
     const index = db.tarefas.findIndex(tarefa => tarefa.id === id);
     if (index === -1) {
         console.log("Tarefa não encontrada");
-        return;
+        return false;
     }
     db.tarefas.splice(index, 1);
+    salvarBanco();
+    return true;
 }

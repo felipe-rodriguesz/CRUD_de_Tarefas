@@ -1,10 +1,6 @@
 import http from 'http';
-import { db } from "./banco.js";
+import { db } from "./database.js";
 import { createTask, listTasks, updateTask, deleteTask } from "./funcoes.js";
-
-createTask("Estudar JavaScript", "Fazer o CRUD funcionar");
-createTask("Estudar Node.js", "Verificar se a lista de tarefas está sendo gerada");
-createTask("Estudar HTTP", "Entender como o JSON trafega na rede");
 
 const regexID = /^\/tasks\/(?<id>[0-9]+)/;
 
@@ -23,8 +19,8 @@ const server = http.createServer((request, response) => {
         const pesquisa = url.searchParams.get('search');
 
         let tarefasFiltradas = db.tarefas;
-        
-        if (pesquisa){
+
+        if (pesquisa) {
             tarefasFiltradas = db.tarefas.filter(tarefa => {
                 const tituloMinusculo = tarefa.titulo.toLowerCase();
                 const descricaoMinuscula = tarefa.descricao.toLowerCase();
@@ -34,7 +30,7 @@ const server = http.createServer((request, response) => {
             });
         }
 
-        response.writeHead(200, { "content-type": "application/json"});
+        response.writeHead(200, { "content-type": "application/json" });
         const tarefasEmTexto = JSON.stringify(tarefasFiltradas);
         response.end(tarefasEmTexto);
 
@@ -51,23 +47,35 @@ const server = http.createServer((request, response) => {
 
             createTask(objetoRecebido.titulo, objetoRecebido.descricao);
 
-            response.writeHead(201, { "content-type": "text/plain"});
+            response.writeHead(201, { "content-type": "text/plain" });
             response.end("Tarefa criada com sucesso via POST!");
         });
 
     } else if (metodo === 'DELETE' && idTarefa !== null) {
-        deleteTask(idTarefa);
-        response.writeHead(200, { "content-type": "text/plain" });
-        response.end("Tarefa deletada com sucesso via DELETE!");
-        
+        const deletada = deleteTask(idTarefa);
+
+        if (deletada) {
+            response.writeHead(200, { "content-type": "text/plain" });
+            response.end("Tarefa deletada com sucesso via DELETE!");
+        } else {
+            response.writeHead(404, { "content-type": "text/plain" });
+            response.end("Erro 404: Tarefa não encontrada!");
+        }
+
     } else if (metodo === 'PATCH' && idTarefa !== null && caminho.includes('/complete')) {
-        updateTask(idTarefa, {status: "CONCLUÍDO!"})
-        response.writeHead(200, { "content-type": "text/plain" })
-        response.end("Tarefa marcada como concluída via PATCH!");
+        const atualizada = updateTask(idTarefa, { status: "CONCLUÍDO!" })
+
+        if (atualizada) {
+            response.writeHead(200, { "content-type": "text/plain" })
+            response.end("Tarefa marcada como concluída via PATCH!");
+        } else {
+            response.writeHead(404, { "content-type": "text/plain" });
+            response.end("Erro 404: Tarefa não encontrada!");
+        }
 
     } else if (metodo === 'PUT' && idTarefa !== null) {
         let pedacosDoBody = [];
-        
+
         request.on('data', (pedaco) => {
             pedacosDoBody.push(pedaco);
         });
@@ -75,13 +83,17 @@ const server = http.createServer((request, response) => {
         request.on('end', () => {
             const bodyEmTexto = Buffer.concat(pedacosDoBody).toString();
             const objetoRecebido = JSON.parse(bodyEmTexto);
+            const atualizada = updateTask(idTarefa, objetoRecebido);
 
-            updateTask(idTarefa, objetoRecebido);
-
-            response.writeHead(200, { "content-type": "text/plain" });
-            response.end("Tarefa atualizada com sucesso via PUT!");
+            if (atualizada) {
+                response.writeHead(200, { "content-type": "text/plain" });
+                response.end("Tarefa atualizada com sucesso via PUT!");
+            } else {
+                response.writeHead(404, { "content-type": "text/plain" });
+                response.end("Erro 404: Tarefa não encontrada!");
+            }
         });
-        
+
     } else {
         response.writeHead(404, { "content-type": "text/plain" })
         response.end("Erro 404: Rota não encontrada");
