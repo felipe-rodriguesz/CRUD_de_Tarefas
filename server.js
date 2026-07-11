@@ -1,10 +1,26 @@
 import http from 'http';
+import { db } from "./banco.js";
+import { createTask, listTasks, updateTask, deleteTask } from "./funcoes.js";
+
+createTask("Estudar JavaScript", "Fazer o CRUD funcionar");
+createTask("Estudar Node.js", "Verificar se a lista de tarefas está sendo gerada");
+createTask("Estudar HTTP", "Entender como o JSON trafega na rede");
 
 const server = http.createServer((request, response) => {
-    response.writeHead(200, { "Content-Type": "text/plain"});
-    response.end("Meu primeiro servidor Node.js!");
+    const url = request.url;
+    const metodo = request.method;
+
+    if (metodo === 'GET' && url === '/tasks') {
+        response.writeHead(200, { "content-type": "application/json"});
+        const tarefasEmTexto = JSON.stringify(db.tarefas);
+response.end(tarefasEmTexto);
+    }else{
+        response.writeHead(404, {"content-type":"text/plain"})
+        response.end("Erro 404: Rota não encontrada");
+    }
+
 });
 
 server.listen(3000, () => {
-    console.log("Servidor rodando! Acesse: http://localhost:3000 no seu navegador.");
+    console.log("Servidor rodando! Acesse: http://localhost:3000/tasks no seu navegador.");
 });
