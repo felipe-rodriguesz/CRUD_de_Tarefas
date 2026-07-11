@@ -1,6 +1,6 @@
 # 🚀 CRUD de Tarefas API
 
-Uma API RESTful desenvolvida do absoluto zero utilizando **Node.js puro** (sem frameworks como Express), focada em demonstrar conhecimentos profundos da base da linguagem.
+Uma API RESTful desenvolvida do absoluto zero utilizando **Node.js puro** (sem frameworks como Express).
 
 ## 🧠 Conceitos Aplicados
 - Arquitetura HTTP (Criação do Servidor, Status Codes, Request/Response).
