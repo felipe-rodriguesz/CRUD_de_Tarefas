@@ -1,31 +1,53 @@
-# 🚀 CRUD de Tarefas API
+# 🚀 Tasks CRUD API - Node.js
 
 ![Demonstração da API](./print.png)
 
-Uma API RESTful desenvolvida do absoluto zero utilizando **Node.js puro** (sem frameworks como Express).
+## 📌 Sobre o projeto
+API REST para gerenciamento de tarefas, desenvolvida utilizando **Node.js puro** (sem frameworks como Express) com o objetivo de praticar os fundamentos do desenvolvimento backend.
 
-## 🧠 Conceitos Aplicados
-- **Arquitetura Modular**: Separação de responsabilidades com padrão de Roteamento (Controllers) e Middlewares.
-- **Streams e Buffers**: Processamento de requisições assíncronas em pedaços para lidar com o Body.
-- **Regex Dinâmico**: Conversão automática de strings (ex: `/tasks/:id`) em Expressões Regulares de captura para os Route Params.
-- **File System (fs/promises)**: Persistência de dados física criando um banco de dados local em formato JSON.
+## ⚙️ Funcionalidades
+- Criar tarefas
+- Listar tarefas
+- Filtrar tarefas por título e descrição
+- Atualizar tarefas por completo
+- Remover tarefas
+- Marcar tarefas como concluídas
 
-## 🛠️ Como rodar o projeto
+## 💻 Tecnologias
+- Node.js
+- JavaScript
+- HTTP (Módulo Nativo)
+- JSON e File System
+- Insomnia
+- Git/GitHub
 
-1. Clone o repositório.
-2. Não é necessário instalar nenhuma dependência, o projeto roda apenas com a biblioteca padrão do Node.js.
-3. No terminal, inicie o servidor:
+## 🚀 Como executar
+1. Clone este repositório:
+   ```bash
+   git clone [https://github.com/felipe-rodriguesz/nodejs-tasks-api.git]
+   ```
+2. Instale as dependências (O projeto é construído apenas com a biblioteca padrão do Node.js, não sendo necessário `npm install`).
+3. Inicie o servidor:
    ```bash
    npm start
    ```
 4. A API estará escutando na porta `http://localhost:3000`.
 
-*(Dica: Você pode importar o arquivo `insomnia.json` presente neste repositório diretamente no seu aplicativo Insomnia para ter todas as rotas já configuradas!)*
+*(Dica: Você pode importar o arquivo `insomnia.json` presente neste repositório diretamente no seu aplicativo Insomnia para ter todas as requisições configuradas!)*
 
-## 📌 Rotas e Exemplos de Requisição
+## 🛣️ Rotas da API
 
-### 1. Criar Tarefa (`POST /tasks`)
-**Corpo da requisição (JSON):**
+| Método | Rota | Descrição | Exemplo de Body |
+|---|---|---|---|
+| `POST` | `/tasks` | Cria uma nova tarefa | `{"titulo": "Node", "descricao": "Estudar"}` |
+| `GET` | `/tasks` | Lista as tarefas (Aceita `?search=`) | *Nenhum* |
+| `PUT` | `/tasks/:id` | Atualiza o título e descrição | `{"titulo": "Novo", "descricao": "Novo"}` |
+| `PATCH`| `/tasks/:id/complete` | Marca a tarefa como concluída | *Nenhum* |
+| `DELETE`| `/tasks/:id` | Exclui a tarefa do banco | *Nenhum* |
+
+## 💡 Exemplos de uso (JSON)
+
+**Criando uma Tarefa (`POST /tasks`)**
 ```json
 {
   "titulo": "Estudar Node.js",
@@ -33,20 +55,21 @@ Uma API RESTful desenvolvida do absoluto zero utilizando **Node.js puro** (sem f
 }
 ```
 
-### 2. Listar Tarefas (`GET /tasks`)
-Pode receber parâmetros de busca opcionais, como: `/tasks?search=Node`
+**Filtrando Tarefas (`GET /tasks?search=Node`)**
+A API vasculha o banco e retorna apenas as tarefas que possuam a palavra "Node" no título ou na descrição (ignorando letras maiúsculas ou minúsculas).
 
-### 3. Atualizar Tarefa Completa (`PUT /tasks/:id`)
-**Corpo da requisição (JSON):**
-```json
-{
-  "titulo": "Estudar Node.js Avançado",
-  "descricao": "Aprender sobre Streams e Buffers"
-}
-```
+## 🧠 O que aprendi
+Desenvolver uma API sem frameworks me forçou a entender como a internet realmente funciona "por debaixo dos panos". Neste projeto eu apliquei e consolidei os seguintes conhecimentos:
+- **Construção de API REST:** Entendimento profundo de Status Codes, Request/Response e verbos HTTP.
+- **Organização de backend:** Refatoração de um script único para uma arquitetura modular com separação de responsabilidades (Rotas, Middlewares, Controladores e Utils).
+- **Manipulação de requisições HTTP:** Uso de Streams e Buffers de forma assíncrona para lidar com a chegada do Body em requisições POST e PUT.
+- **Persistência simples:** Criação de um banco de dados local através de leitura e escrita de arquivos físicos usando o módulo nativo `fs/promises`.
+- **Tratamento de erros:** Validação de fluxos incorretos (ex: deletar IDs inexistentes, acessar rotas não cadastradas) retornando a sinalização `404 Not Found` ao cliente.
+- **Documentação técnica:** Criação de documentação (README) focada no usuário e exportação de Collection de testes (Insomnia).
 
-### 4. Marcar Tarefa como Concluída (`PATCH /tasks/:id/complete`)
-Não requer corpo na requisição. Apenas o ID na URL.
-
-### 5. Deletar Tarefa (`DELETE /tasks/:id`)
-Não requer corpo na requisição. Apenas o ID na URL.
+## 🚀 Melhorias futuras
+- Substituir o arquivo de texto (JSON) por um Banco de Dados Relacional real (PostgreSQL).
+- Implementar fluxo de autenticação e rotas privadas usando JWT (JSON Web Token).
+- Escrever testes automatizados (Unitários e de Ponta a Ponta) utilizando Vitest ou Jest.
+- Configurar documentação interativa utilizando o padrão OpenAPI (Swagger).
+- Fazer o Deploy da API na nuvem utilizando serviços como o Render.
